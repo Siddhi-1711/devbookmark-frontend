@@ -54,22 +54,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Stats */}
-      <section className="py-12 border-y border-gray-800 bg-gray-900/30">
-        <div className="max-w-4xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {[
-            { value: '10K+', label: 'Resources' },
-            { value: '5K+', label: 'Developers' },
-            { value: '500+', label: 'Collections' },
-            { value: '100%', label: 'Free' },
-          ].map(s => (
-            <div key={s.label}>
-              <p className="text-3xl font-bold text-white">{s.value}</p>
-              <p className="text-gray-500 text-sm mt-1">{s.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+
 
       {/* Features grid */}
       <section className="py-24 px-4">
@@ -182,31 +167,7 @@ export default function LandingPage() {
             <p className="text-gray-400">Everything you love, nothing you don't</p>
           </div>
 
-          <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
-            <div className="grid grid-cols-4 text-center text-sm">
-              <div className="p-4 text-gray-500">Feature</div>
-              <div className="p-4 text-blue-400 font-semibold bg-blue-600/5 border-x border-blue-600/20">devbookmark</div>
-              <div className="p-4 text-gray-500">Substack</div>
-              <div className="p-4 text-gray-500">Pinterest</div>
-            </div>
-            {[
-              ['Save resources/links', '✅', '❌', '✅'],
-              ['Write articles', '✅', '✅', '❌'],
-              ['Collections', '✅', '❌', '✅'],
-              ['Reading list', '✅', '❌', '❌'],
-              ['Series / courses', '✅', '❌', '❌'],
-              ['Developer focused', '✅', '❌', '❌'],
-              ['Creator dashboard', '✅', '✅', '❌'],
-              ['100% Free', '✅', '⚠️', '✅'],
-            ].map(([feature, ...vals]) => (
-              <div key={feature} className="grid grid-cols-4 text-center text-sm border-t border-gray-800">
-                <div className="p-3.5 text-gray-400 text-left px-5">{feature}</div>
-                <div className="p-3.5 bg-blue-600/5 border-x border-blue-600/20">{vals[0]}</div>
-                <div className="p-3.5 text-gray-500">{vals[1]}</div>
-                <div className="p-3.5 text-gray-500">{vals[2]}</div>
-              </div>
-            ))}
-          </div>
+
         </div>
       </section>
 
