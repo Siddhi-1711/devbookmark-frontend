@@ -24,8 +24,10 @@ const [showTablePicker, setShowTablePicker] = useState(false)
 const [tableSize, setTableSize] = useState({ rows: 0, cols: 0 })
   const editor = useEditor({
     extensions: [
-      StarterKit,
-      Underline,
+     StarterKit.configure({
+       underline: false,
+     }),
+     Underline,
       TextStyle,
       Color,
       Highlight.configure({ multicolor: true }),
