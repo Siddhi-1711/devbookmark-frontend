@@ -7,6 +7,11 @@ import Highlight from '@tiptap/extension-highlight'
 import TextAlign from '@tiptap/extension-text-align'
 import Link from '@tiptap/extension-link'
 import { useEffect } from 'react'
+import Table from '@tiptap/extension-table'
+import TableRow from '@tiptap/extension-table-row'
+import TableCell from '@tiptap/extension-table-cell'
+import TableHeader from '@tiptap/extension-table-header'
+import { Table as TableIcon } from 'lucide-react'
 import {
   Bold, Italic, Underline as UnderlineIcon, Strikethrough,
   AlignLeft, AlignCenter, AlignRight, Link as LinkIcon,
@@ -24,6 +29,10 @@ export default function RichTextEditor({ content, onChange }) {
       Highlight.configure({ multicolor: true }),
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
       Link.configure({ openOnClick: false }),
+      Table.configure({ resizable: true }),
+      TableRow,
+      TableHeader,
+      TableCell,
     ],
     content: content || '',
     onUpdate: ({ editor }) => {
@@ -219,7 +228,16 @@ export default function RichTextEditor({ content, onChange }) {
           </ToolbarButton>
         </div>
       </div>
-
+       <div className="flex gap-1 pl-2 border-l border-gray-700">
+         <ToolbarButton
+           onClick={() =>
+             editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+           }
+           title="Insert Table"
+         >
+           <TableIcon size={15} />
+         </ToolbarButton>
+       </div>
       {/* Editor area */}
       <EditorContent
         editor={editor}
@@ -235,6 +253,9 @@ export default function RichTextEditor({ content, onChange }) {
           [&_.ProseMirror_code]:bg-gray-700 [&_.ProseMirror_code]:px-1.5 [&_.ProseMirror_code]:rounded [&_.ProseMirror_code]:text-blue-300 [&_.ProseMirror_code]:text-sm
           [&_.ProseMirror_pre]:bg-gray-900 [&_.ProseMirror_pre]:p-4 [&_.ProseMirror_pre]:rounded-lg [&_.ProseMirror_pre]:mb-3
           [&_.ProseMirror_a]:text-blue-400 [&_.ProseMirror_a]:underline
+          [&_.ProseMirror_table]:w-full [&_.ProseMirror_table]:border-collapse [&_.ProseMirror_table]:mb-4
+          [&_.ProseMirror_td]:border [&_.ProseMirror_td]:border-gray-600 [&_.ProseMirror_td]:p-2 [&_.ProseMirror_td]:text-gray-200
+          [&_.ProseMirror_th]:border [&_.ProseMirror_th]:border-gray-600 [&_.ProseMirror_th]:p-2 [&_.ProseMirror_th]:bg-gray-700 [&_.ProseMirror_th]:font-semibold [&_.ProseMirror_th]:text-white
           [&_.ProseMirror_mark]:rounded [&_.ProseMirror_mark]:px-0.5
           [&_.ProseMirror_p.is-editor-empty:first-child::before]:content-[attr(data-placeholder)] [&_.ProseMirror_p.is-editor-empty:first-child::before]:text-gray-600 [&_.ProseMirror_p.is-editor-empty:first-child::before]:float-left [&_.ProseMirror_p.is-editor-empty:first-child::before]:pointer-events-none"
       />

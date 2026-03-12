@@ -7,7 +7,15 @@ button {
 button:disabled {
   cursor: not-allowed;
 }
-/* Preserve inline colors from rich text editor */
-[class*="prose"] span[style*="color"] {
+
+/* Fix: preserve inline colors from Tiptap rich text editor */
+.prose span[style],
+.prose p span[style],
+.prose [style*="color"] {
   color: revert !important;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  filter: invert(1);
 }

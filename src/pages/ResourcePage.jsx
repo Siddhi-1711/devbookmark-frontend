@@ -421,7 +421,12 @@ const toggleRepost = async () => {
               [&_strong]:text-white [&_strong]:font-semibold
               [&_mark]:bg-yellow-400/20 [&_mark]:text-yellow-200 [&_mark]:rounded [&_mark]:px-1
               [&_hr]:border-gray-700 [&_hr]:my-6
-              [&_img]:rounded-xl [&_img]:max-w-full"
+              [&_img]:rounded-xl [&_img]:max-w-full
+              [&_table]:w-full [&_table]:border-collapse [&_table]:mb-4
+              [&_td]:border [&_td]:border-gray-700 [&_td]:p-2 [&_td]:text-gray-300
+              [&_th]:border [&_th]:border-gray-700 [&_th]:p-2 [&_th]:bg-gray-800 [&_th]:font-semibold [&_th]:text-white
+              "
+
               dangerouslySetInnerHTML={{ __html: resource.content }}
             />
           </div>
