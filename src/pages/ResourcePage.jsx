@@ -406,7 +406,7 @@ const toggleRepost = async () => {
         {resource.content && (
           <div className="mb-10">
             <div className="bg-gray-900 border border-gray-800 rounded-2xl p-7 md:p-10 text-gray-300 leading-relaxed text-[15px]
-              prose prose-invert prose-sm max-w-none
+              max-w-none
               [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:text-white [&_h1]:mb-4 [&_h1]:mt-6
               [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-white [&_h2]:mb-3 [&_h2]:mt-5
               [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-white [&_h3]:mb-2 [&_h3]:mt-4

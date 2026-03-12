@@ -227,17 +227,27 @@ export default function RichTextEditor({ content, onChange }) {
             <LinkIcon size={15} />
           </ToolbarButton>
         </div>
+         <div className="flex gap-1 pl-2 border-l border-gray-700">
+                  <ToolbarButton
+                    onClick={() => {
+                      const rows = parseInt(window.prompt('Number of rows (max 10):', '3'))
+                      const cols = parseInt(window.prompt('Number of columns (max 10):', '3'))
+                      if (!isNaN(rows) && !isNaN(cols)) {
+                        editor.chain().focus().insertTable({
+                          rows: Math.min(rows, 10),
+                          cols: Math.min(cols, 10),
+                          withHeaderRow: true
+                        }).run()
+                      }
+                    }}
+                    title="Insert Table"
+                  >
+                    <TableIcon size={15} />
+                  </ToolbarButton>
+                </div>
+
       </div>
-       <div className="flex gap-1 pl-2 border-l border-gray-700">
-         <ToolbarButton
-           onClick={() =>
-             editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
-           }
-           title="Insert Table"
-         >
-           <TableIcon size={15} />
-         </ToolbarButton>
-       </div>
+
       {/* Editor area */}
       <EditorContent
         editor={editor}

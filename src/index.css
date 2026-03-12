@@ -11,8 +11,8 @@ button:disabled {
 /* Fix: preserve inline colors from Tiptap rich text editor */
 .prose span[style],
 .prose p span[style],
-.prose [style*="color"] {
-  color: revert !important;
+.prose span[style*="color"] {
+  color: unset !important;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
