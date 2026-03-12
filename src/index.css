@@ -7,3 +7,7 @@ button {
 button:disabled {
   cursor: not-allowed;
 }
+/* Preserve inline colors from rich text editor */
+[class*="prose"] span[style*="color"] {
+  color: revert !important;
+}

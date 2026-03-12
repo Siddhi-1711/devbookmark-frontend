@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../store/authStore'
 import { login } from '../api/auth'
-
+import { Eye, EyeOff } from 'lucide-react'
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -10,7 +10,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const { loginUser } = useAuth()
   const navigate = useNavigate()
-
+const [showPassword, setShowPassword] = useState(false)
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
@@ -61,16 +61,22 @@ export default function LoginPage() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm text-gray-400 mb-1">Password</label>
+            <div className="relative">
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 transition"
+                className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 pr-11 focus:outline-none focus:border-blue-500 transition"
                 placeholder="••••••••"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200 transition"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
 
             <button
