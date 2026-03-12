@@ -159,17 +159,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* vs competitors */}
-      <section className="py-24 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Why devbookmark?</h2>
-            <p className="text-gray-400">Everything you love, nothing you don't</p>
-          </div>
 
-
-        </div>
-      </section>
 
       {/* CTA */}
       <section className="py-24 px-4 text-center">
