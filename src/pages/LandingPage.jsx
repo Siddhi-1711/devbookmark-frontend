@@ -50,7 +50,7 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          <p className="text-gray-600 text-sm mt-4">No credit card required · Free forever</p>
+
         </div>
       </section>
 
