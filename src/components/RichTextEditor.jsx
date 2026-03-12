@@ -100,16 +100,7 @@ const [tableSize, setTableSize] = useState({ rows: 0, cols: 0 })
     setShowTablePicker(false)
     setTableSize({ rows: 0, cols: 0 })
   }
-const insertTable = (rows, cols) => {
-  editor.chain().focus().insertTable({
-    rows,
-    cols,
-    withHeaderRow: true,
-  }).run()
 
-  setShowTablePicker(false)
-  setTableSize({ rows: 0, cols: 0 })
-}
 
 const addRowAfter = () => {
   editor.chain().focus().addRowAfter().run()
