@@ -16,13 +16,12 @@ import {
   Bold, Italic, Underline as UnderlineIcon, Strikethrough,
   AlignLeft, AlignCenter, AlignRight, Link as LinkIcon,
   List, ListOrdered, Quote, Code, Heading1, Heading2, Heading3,
-  Highlighter, Undo, Redo
+  Highlighter, Undo, Redo, Plus
 } from 'lucide-react'
 
 export default function RichTextEditor({ content, onChange }) {
-  const [showTablePicker, setShowTablePicker] = useState(false)
-  const [tableSize, setTableSize] = useState({ rows: 0, cols: 0 })
-
+const [showTablePicker, setShowTablePicker] = useState(false)
+const [tableSize, setTableSize] = useState({ rows: 0, cols: 0 })
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -83,8 +82,8 @@ export default function RichTextEditor({ content, onChange }) {
   }
 
   const grid = useMemo(() => {
-    return Array.from({ length: 10 }, (_, r) =>
-      Array.from({ length: 10 }, (_, c) => ({
+    return Array.from({ length: 4 }, (_, r) =>
+      Array.from({ length: 4 }, (_, c) => ({
         rows: r + 1,
         cols: c + 1,
       }))
@@ -101,7 +100,24 @@ export default function RichTextEditor({ content, onChange }) {
     setShowTablePicker(false)
     setTableSize({ rows: 0, cols: 0 })
   }
+const insertTable = (rows, cols) => {
+  editor.chain().focus().insertTable({
+    rows,
+    cols,
+    withHeaderRow: true,
+  }).run()
 
+  setShowTablePicker(false)
+  setTableSize({ rows: 0, cols: 0 })
+}
+
+const addRowAfter = () => {
+  editor.chain().focus().addRowAfter().run()
+}
+
+const addColumnAfter = () => {
+  editor.chain().focus().addColumnAfter().run()
+}
   return (
     <div className="border border-gray-700 rounded-xl overflow-hidden focus-within:border-blue-500 transition bg-gray-800">
       {/* Sticky Toolbar */}
@@ -272,7 +288,7 @@ export default function RichTextEditor({ content, onChange }) {
         </div>
 
         {/* Table Picker */}
-        <div className="relative flex gap-1">
+        <div className="relative flex items-center gap-1 pl-2 border-l border-gray-700">
           <ToolbarButton
             onClick={() => setShowTablePicker((prev) => !prev)}
             title="Insert Table"
@@ -280,15 +296,31 @@ export default function RichTextEditor({ content, onChange }) {
             <TableIcon size={15} />
           </ToolbarButton>
 
+          <ToolbarButton
+            onClick={addRowAfter}
+            title="Add Row"
+          >
+            <Plus size={14} />
+            <span className="ml-1 text-[11px]">R</span>
+          </ToolbarButton>
+
+          <ToolbarButton
+            onClick={addColumnAfter}
+            title="Add Column"
+          >
+            <Plus size={14} />
+            <span className="ml-1 text-[11px]">C</span>
+          </ToolbarButton>
+
           {showTablePicker && (
-            <div className="absolute top-10 left-0 z-30 bg-gray-900 border border-gray-700 rounded-lg p-3 shadow-xl">
+            <div className="absolute top-10 left-0 z-30 bg-gray-900 border border-gray-700 rounded-lg p-3 shadow-xl min-w-[160px]">
               <div className="mb-2 text-xs text-gray-300">
                 {tableSize.rows && tableSize.cols
                   ? `${tableSize.rows} x ${tableSize.cols}`
                   : 'Select table size'}
               </div>
 
-              <div className="grid grid-cols-10 gap-1">
+              <div className="grid grid-cols-4 gap-1">
                 {grid.flat().map((cell, index) => {
                   const active =
                     cell.rows <= tableSize.rows && cell.cols <= tableSize.cols
@@ -299,7 +331,7 @@ export default function RichTextEditor({ content, onChange }) {
                       type="button"
                       onMouseEnter={() => setTableSize({ rows: cell.rows, cols: cell.cols })}
                       onClick={() => insertTable(cell.rows, cell.cols)}
-                      className={`w-4 h-4 border rounded-sm transition ${
+                      className={`w-6 h-6 border rounded-sm transition ${
                         active
                           ? 'bg-blue-500 border-blue-400'
                           : 'bg-gray-800 border-gray-600 hover:border-gray-400'
