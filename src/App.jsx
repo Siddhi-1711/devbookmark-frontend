@@ -35,7 +35,12 @@ function GuestRoute({ children }) {
   if (user) return <Navigate to="/feed" replace />
   return children
 }
-
+function AdminRoute({ children }) {
+  const { user } = useAuth()
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role !== 'ADMIN') return <Navigate to="/feed" replace />
+  return children
+}
 export default function App() {
   return (
     <Routes>
@@ -63,7 +68,7 @@ export default function App() {
 <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
 <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
 <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-<Route path="/admin" element={<AdminPage />} />
+<Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
 <Route path="*" element={<NotFoundPage />} />
 
 <Route path="/collections" element={<ProtectedRoute><CollectionsPage /></ProtectedRoute>} />
