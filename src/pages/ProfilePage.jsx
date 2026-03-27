@@ -7,6 +7,7 @@ import ResourceCard from '../components/ResourceCard'
 
 import { Pin, X, UserPlus, UserCheck, Settings, Grid, List, BookOpen } from 'lucide-react'
 import { usePageTitle } from '../hooks/usePageTitle'
+
 export default function ProfilePage() {
   const { userId } = useParams()
   const { user } = useAuth()
@@ -111,30 +112,33 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-gray-950">
         <Navbar />
-        <div className="max-w-4xl mx-auto px-4 pt-20 pb-16">
-          <div className="bg-gray-900/70 border border-gray-800 rounded-2xl p-6 animate-pulse">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="h-20 w-20 bg-gray-800 rounded-2xl" />
-                <div className="space-y-3">
-                  <div className="h-7 bg-gray-800 rounded w-52" />
-                  <div className="flex gap-2">
-                    <div className="h-9 bg-gray-800 rounded-xl w-28" />
-                    <div className="h-9 bg-gray-800 rounded-xl w-28" />
-                    <div className="h-9 bg-gray-800 rounded-xl w-28" />
+        <div className="mx-auto max-w-4xl px-4 pb-16 pt-20 sm:px-5">
+          <div className="animate-pulse rounded-2xl border border-gray-800 bg-gray-900/70 p-5 sm:p-6">
+            <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+              <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center">
+                <div className="h-20 w-20 rounded-2xl bg-gray-800" />
+                <div className="min-w-0 space-y-3">
+                  <div className="h-7 w-40 rounded bg-gray-800 sm:w-52" />
+                  <div className="flex flex-wrap gap-2">
+                    <div className="h-9 w-24 rounded-xl bg-gray-800 sm:w-28" />
+                    <div className="h-9 w-24 rounded-xl bg-gray-800 sm:w-28" />
+                    <div className="h-9 w-24 rounded-xl bg-gray-800 sm:w-28" />
                   </div>
                 </div>
               </div>
-              <div className="h-10 w-36 bg-gray-800 rounded-xl" />
+              <div className="h-10 w-full rounded-xl bg-gray-800 md:w-36" />
             </div>
           </div>
 
           <div className="mt-6 space-y-4">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-gray-900/70 border border-gray-800 rounded-2xl p-5 animate-pulse">
-                <div className="h-5 w-64 bg-gray-800 rounded mb-2" />
-                <div className="h-4 w-full bg-gray-800 rounded mb-2" />
-                <div className="h-4 w-5/6 bg-gray-800 rounded" />
+              <div
+                key={i}
+                className="animate-pulse rounded-2xl border border-gray-800 bg-gray-900/70 p-4 sm:p-5"
+              >
+                <div className="mb-2 h-5 w-48 rounded bg-gray-800 sm:w-64" />
+                <div className="mb-2 h-4 w-full rounded bg-gray-800" />
+                <div className="h-4 w-5/6 rounded bg-gray-800" />
               </div>
             ))}
           </div>
@@ -149,60 +153,67 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-gray-950">
       <Navbar />
 
-      <div className="max-w-4xl mx-auto px-4 pt-20 pb-16">
+      <div className="mx-auto max-w-4xl px-4 pb-16 pt-20 sm:px-5">
         {/* Profile Header */}
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-6 mb-6 shadow-sm">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-4 min-w-0">
+        <div className="mb-6 rounded-2xl border border-gray-800 bg-gray-900/80 p-4 shadow-sm sm:p-6">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            {/* Left */}
+            <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start">
               {/* Avatar */}
-              <div className="w-20 h-20 rounded-2xl shrink-0 ring-1 ring-blue-500/30 overflow-hidden">
+              <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl ring-1 ring-blue-500/30">
                 {profile?.avatarUrl ? (
                   <img
                     src={profile.avatarUrl}
                     alt={profile.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => { e.target.style.display = 'none' }}
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      e.target.style.display = 'none'
+                    }}
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white text-2xl font-bold">
+                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-blue-700 text-2xl font-bold text-white">
                     {initials}
                   </div>
                 )}
               </div>
 
-              <div className="min-w-0">
-                <h1 className="text-white text-2xl font-bold leading-tight truncate">
+              <div className="min-w-0 flex-1">
+                <h1 className="break-words text-2xl font-bold leading-tight text-white sm:text-3xl">
                   {profile?.name}
                 </h1>
+
                 {profile?.username && (
-                  <p className="text-gray-500 text-sm mt-0.5">@{profile.username}</p>
+                  <p className="mt-0.5 break-all text-sm text-gray-500">
+                    @{profile.username}
+                  </p>
                 )}
+
                 {profile?.bio && (
-                  <p className="text-gray-400 text-sm mt-2 max-w-md leading-relaxed">
+                  <p className="mt-2 max-w-2xl break-words text-sm leading-relaxed text-gray-400">
                     {profile.bio}
                   </p>
                 )}
 
-                {/* Stats row as chips */}
+                {/* Stats */}
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     onClick={() => openModal('followers')}
-                    className="px-3 py-2 bg-gray-800/60 hover:bg-gray-800 border border-gray-700/50 rounded-xl text-sm transition"
+                    className="rounded-xl border border-gray-700/50 bg-gray-800/60 px-3 py-2 text-sm transition hover:bg-gray-800"
                   >
-                    <span className="text-white font-semibold">{profile?.followers}</span>{' '}
+                    <span className="font-semibold text-white">{profile?.followers}</span>{' '}
                     <span className="text-gray-400">followers</span>
                   </button>
 
                   <button
                     onClick={() => openModal('following')}
-                    className="px-3 py-2 bg-gray-800/60 hover:bg-gray-800 border border-gray-700/50 rounded-xl text-sm transition"
+                    className="rounded-xl border border-gray-700/50 bg-gray-800/60 px-3 py-2 text-sm transition hover:bg-gray-800"
                   >
-                    <span className="text-white font-semibold">{profile?.following}</span>{' '}
+                    <span className="font-semibold text-white">{profile?.following}</span>{' '}
                     <span className="text-gray-400">following</span>
                   </button>
 
-                  <div className="px-3 py-2 bg-gray-800/30 border border-gray-800 rounded-xl text-sm">
-                    <span className="text-white font-semibold">{profile?.resources}</span>{' '}
+                  <div className="rounded-xl border border-gray-800 bg-gray-800/30 px-3 py-2 text-sm">
+                    <span className="font-semibold text-white">{profile?.resources}</span>{' '}
                     <span className="text-gray-400">resources</span>
                   </div>
                 </div>
@@ -210,46 +221,54 @@ export default function ProfilePage() {
             </div>
 
             {/* Actions */}
-            <div className="flex flex-wrap gap-2 shrink-0">
+            <div className="flex w-full flex-col gap-2 sm:flex-row sm:flex-wrap lg:w-auto lg:justify-end">
               {isMe ? (
                 <button
                   onClick={() => navigate('/settings')}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm rounded-xl transition border border-gray-700/60"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-700/60 bg-gray-800 px-4 py-2 text-sm text-white transition hover:bg-gray-700 sm:w-auto"
                 >
-                  <Settings size={15} /> Edit Profile
+                  <Settings size={15} />
+                  Edit Profile
                 </button>
               ) : user ? (
                 <button
                   onClick={toggleFollow}
                   disabled={followLoading}
-                  className={`flex items-center gap-2 px-5 py-2 text-sm rounded-xl transition font-medium border ${
+                  className={`inline-flex w-full items-center justify-center gap-2 rounded-xl border px-5 py-2 text-sm font-medium transition sm:w-auto ${
                     isFollowing
-                      ? 'bg-gray-800 hover:bg-red-900/30 hover:text-red-300 border-gray-700/60 text-white'
-                      : 'bg-blue-600 hover:bg-blue-700 border-blue-500/40 text-white'
-                  } ${followLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                      ? 'border-gray-700/60 bg-gray-800 text-white hover:bg-red-900/30 hover:text-red-300'
+                      : 'border-blue-500/40 bg-blue-600 text-white hover:bg-blue-700'
+                  } ${followLoading ? 'cursor-not-allowed opacity-70' : ''}`}
                 >
                   {isFollowing ? (
-                    <><UserCheck size={15} /> {followLoading ? '...' : 'Following'}</>
+                    <>
+                      <UserCheck size={15} />
+                      {followLoading ? '...' : 'Following'}
+                    </>
                   ) : (
-                    <><UserPlus size={15} /> {followLoading ? '...' : 'Follow'}</>
+                    <>
+                      <UserPlus size={15} />
+                      {followLoading ? '...' : 'Follow'}
+                    </>
                   )}
                 </button>
               ) : (
                 <button
                   onClick={() => navigate('/login')}
-                  className="flex items-center gap-2 px-5 py-2 text-sm rounded-xl transition font-medium border bg-blue-600 hover:bg-blue-700 border-blue-500/40 text-white"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-blue-500/40 bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 sm:w-auto"
                 >
-                  <UserPlus size={15} /> Login to follow
+                  <UserPlus size={15} />
+                  Login to follow
                 </button>
               )}
 
-              {/* Publication button — always show if exists */}
               {profile?.publicationSlug && (
                 <Link
                   to={`/p/${profile.publicationSlug}`}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm rounded-xl transition border border-gray-700/60"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-700/60 bg-gray-800 px-4 py-2 text-sm text-white transition hover:bg-gray-700 sm:w-auto"
                 >
-                  <BookOpen size={15} /> Publication
+                  <BookOpen size={15} />
+                  Publication
                 </Link>
               )}
             </div>
@@ -259,31 +278,32 @@ export default function ProfilePage() {
         {/* Pinned */}
         {pinned.length > 0 && (
           <div className="mb-8">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-white font-semibold flex items-center gap-2 text-sm">
-                <Pin size={14} className="text-blue-400" /> Pinned
+            <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="flex items-center gap-2 text-sm font-semibold text-white">
+                <Pin size={14} className="text-blue-400" />
+                Pinned
               </h2>
               <span className="text-xs text-gray-500">{pinned.length} items</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {pinned.map(r => (
                 <Link
                   to={`/resources/${r.id}`}
                   key={r.id}
-                  className="bg-gray-900/80 border border-blue-500/20 rounded-2xl p-4 hover:border-blue-500/45 hover:bg-gray-900 transition group"
+                  className="group rounded-2xl border border-blue-500/20 bg-gray-900/80 p-4 transition hover:border-blue-500/45 hover:bg-gray-900"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="mt-0.5 px-2 py-1 rounded-lg bg-blue-600/10 border border-blue-500/20 text-blue-300 text-xs">
+                    <div className="mt-0.5 shrink-0 rounded-lg border border-blue-500/20 bg-blue-600/10 px-2 py-1 text-xs text-blue-300">
                       Pinned
                     </div>
 
                     <div className="min-w-0">
-                      <h3 className="text-white font-medium text-sm group-hover:text-blue-400 transition truncate">
+                      <h3 className="break-words text-sm font-medium text-white transition group-hover:text-blue-400">
                         {r.title}
                       </h3>
                       {r.description && (
-                        <p className="text-gray-500 text-xs mt-1 line-clamp-2 leading-relaxed">
+                        <p className="mt-1 line-clamp-2 break-words text-xs leading-relaxed text-gray-500">
                           {r.description}
                         </p>
                       )}
@@ -296,60 +316,69 @@ export default function ProfilePage() {
         )}
 
         {/* Resources header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-white font-semibold">Resources</h2>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <h2 className="font-semibold text-white">Resources</h2>
+            <p className="mt-0.5 text-xs text-gray-500">
               {visibleResources.length} visible
             </p>
           </div>
 
-          {/* Segmented control */}
-          <div className="flex items-center bg-gray-900 border border-gray-800 rounded-xl p-1">
+          <div className="flex w-full items-center rounded-xl border border-gray-800 bg-gray-900 p-1 sm:w-auto">
             <button
               onClick={() => setView('list')}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition ${
+              className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm transition sm:flex-none ${
                 view === 'list' ? 'bg-gray-800 text-white' : 'text-gray-500 hover:text-white'
               }`}
               title="List view"
             >
               <List size={14} />
-              <span className="hidden sm:inline">List</span>
+              <span>List</span>
             </button>
 
             <button
               onClick={() => setView('grid')}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition ${
+              className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm transition sm:flex-none ${
                 view === 'grid' ? 'bg-gray-800 text-white' : 'text-gray-500 hover:text-white'
               }`}
               title="Grid view"
             >
               <Grid size={14} />
-              <span className="hidden sm:inline">Grid</span>
+              <span>Grid</span>
             </button>
           </div>
         </div>
 
         {/* Resources */}
         {visibleResources.length === 0 ? (
-          <div className="bg-gray-900/60 border border-gray-800 rounded-2xl p-10 text-center">
-            <p className="text-gray-200 font-medium text-lg">No resources yet</p>
-            <p className="text-gray-500 text-sm mt-1">
-              {isMe ? 'Save or create your first resource to see it here.' : 'This user hasn’t posted anything yet.'}
+          <div className="rounded-2xl border border-gray-800 bg-gray-900/60 p-8 text-center sm:p-10">
+            <p className="text-lg font-medium text-gray-200">No resources yet</p>
+            <p className="mt-1 text-sm text-gray-500">
+              {isMe
+                ? 'Save or create your first resource to see it here.'
+                : 'This user hasn’t posted anything yet.'}
             </p>
             {isMe && (
               <Link
                 to="/create"
-                className="inline-block mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-xl transition border border-blue-500/40"
+                className="mt-4 inline-block rounded-xl border border-blue-500/40 bg-blue-600 px-4 py-2 text-sm text-white transition hover:bg-blue-700"
               >
                 + Create your first resource
               </Link>
             )}
           </div>
         ) : (
-          <div className={view === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 gap-4' : 'space-y-4'}>
+          <div
+            className={
+              view === 'grid'
+                ? 'grid grid-cols-1 gap-4 md:grid-cols-2'
+                : 'space-y-4'
+            }
+          >
             {visibleResources.map(r => (
-              <ResourceCard key={r.id} resource={r} />
+              <div key={r.id} className="min-w-0">
+                <ResourceCard resource={r} />
+              </div>
             ))}
           </div>
         )}
@@ -358,18 +387,18 @@ export default function ProfilePage() {
       {/* Modal */}
       {modal && (
         <div
-          className="fixed inset-0 bg-black/70 backdrop-blur-[2px] flex items-center justify-center z-50 px-4"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 px-3 pb-0 pt-6 backdrop-blur-[2px] sm:items-center sm:px-4"
           onClick={() => setModal(null)}
         >
           <div
-            className="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md p-5 shadow-xl"
+            className="max-h-[85vh] w-full max-w-md overflow-hidden rounded-t-2xl border border-gray-800 bg-gray-900 p-4 shadow-xl sm:rounded-2xl sm:p-5"
             onClick={e => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-semibold capitalize">{modal}</h3>
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h3 className="capitalize font-semibold text-white">{modal}</h3>
               <button
                 onClick={() => setModal(null)}
-                className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition"
+                className="rounded-lg p-2 text-gray-400 transition hover:bg-gray-800 hover:text-white"
               >
                 <X size={18} />
               </button>
@@ -378,28 +407,28 @@ export default function ProfilePage() {
             {modalLoading ? (
               <div className="space-y-3">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="h-12 bg-gray-800 rounded-xl animate-pulse" />
+                  <div key={i} className="h-12 animate-pulse rounded-xl bg-gray-800" />
                 ))}
               </div>
             ) : modalUsers.length === 0 ? (
-              <div className="bg-gray-950 border border-gray-800 rounded-xl p-4">
-                <p className="text-gray-500 text-sm">No users found.</p>
+              <div className="rounded-xl border border-gray-800 bg-gray-950 p-4">
+                <p className="text-sm text-gray-500">No users found.</p>
               </div>
             ) : (
-              <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+              <div className="max-h-[60vh] space-y-2 overflow-y-auto pr-1">
                 {modalUsers.map(u => (
                   <Link
                     key={u.id}
                     to={`/users/${u.id}`}
                     onClick={() => setModal(null)}
-                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-800 transition border border-transparent hover:border-gray-700"
+                    className="flex items-center gap-3 rounded-xl border border-transparent p-3 transition hover:border-gray-700 hover:bg-gray-800"
                   >
-                    <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white text-sm font-bold shrink-0 ring-1 ring-blue-500/30">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-sm font-bold text-white ring-1 ring-blue-500/30">
                       {u.name?.[0]?.toUpperCase()}
                     </div>
                     <div className="min-w-0">
-                      <div className="text-white text-sm truncate">{u.name}</div>
-                      <div className="text-xs text-gray-500 truncate">View profile</div>
+                      <div className="truncate text-sm text-white">{u.name}</div>
+                      <div className="truncate text-xs text-gray-500">View profile</div>
                     </div>
                   </Link>
                 ))}
