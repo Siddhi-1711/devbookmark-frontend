@@ -9,6 +9,12 @@ import { usePageTitle } from "../hooks/usePageTitle";
 const TYPES = ["ALL", "ARTICLE", "VIDEO", "REPO", "DOC", "WRITTEN_POST"];
 const SORTS = ["latest", "oldest", "popular"];
 
+const getTypeLabel = (t) => {
+  if (t === "ALL") return "All Types";
+  if (t === "WRITTEN_POST") return "Article";
+  return t.charAt(0) + t.slice(1).toLowerCase();
+};
+
 export default function SearchPage() {
   usePageTitle("Search");
   const { user } = useAuth();
@@ -28,6 +34,7 @@ export default function SearchPage() {
       if (q.trim().length >= 2) fetchSuggestions();
       else setSuggestions({ titles: [], tags: [] });
     }, 250);
+
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q]);
@@ -113,7 +120,6 @@ export default function SearchPage() {
       <Navbar />
 
       <div className="mx-auto max-w-4xl px-4 pb-16 pt-20 sm:px-5">
-        {/* Header */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <h1 className="text-2xl font-bold text-white sm:text-3xl">Search</h1>
@@ -132,12 +138,10 @@ export default function SearchPage() {
           )}
         </div>
 
-        {/* Search form */}
         <form
           onSubmit={search}
           className="mb-6 rounded-2xl border border-gray-800 bg-gray-900 p-4 sm:p-5"
         >
-          {/* Search input */}
           <div className="relative mb-4">
             <Search
               size={18}
@@ -201,74 +205,94 @@ export default function SearchPage() {
             )}
           </div>
 
-          {/* Type chips */}
-          <div className="mb-4">
-            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-gray-500">
-              Type
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {TYPES.map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => setType(t)}
-                  className={`rounded-lg px-3 py-2 text-xs transition sm:text-sm ${
-                    type === t
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-800 text-gray-400 hover:text-white"
-                  }`}
-                >
-                  {t === "ALL"
-                    ? "All Types"
-                    : t === "WRITTEN_POST"
-                    ? "Article"
-                    : t.charAt(0) + t.slice(1).toLowerCase()}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Sort + author + submit */}
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <p className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-gray-500">
-                <Filter size={13} />
-                Sort
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {SORTS.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => setSort(s)}
-                    className={`rounded-lg px-3 py-2 text-xs capitalize transition sm:text-sm ${
-                      sort === s
-                        ? "bg-gray-700 text-white"
-                        : "bg-gray-800 text-gray-400 hover:text-white"
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
+              <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-500">
+                Type
+              </label>
+              <div className="relative">
+                <select
+                  value={type}
+                  onChange={(e) => setType(e.target.value)}
+                  className="w-full appearance-none rounded-xl border border-gray-700 bg-gray-800 px-3 py-2.5 pr-10 text-sm text-white outline-none transition focus:border-blue-500"
+                >
+                  {TYPES.map((t) => (
+                    <option key={t} value={t}>
+                      {getTypeLabel(t)}
+                    </option>
+                  ))}
+                </select>
+
+                <svg
+                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path
+                    d="M7 10l5 5 5-5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
-              <input
-                type="text"
-                value={author}
-                onChange={(e) => setAuthor(e.target.value)}
-                placeholder="Filter by author..."
-                className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
-              />
+            <div>
+              <label className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-gray-500">
+                <Filter size={13} />
+                Sort
+              </label>
+              <div className="relative">
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value)}
+                  className="w-full appearance-none rounded-xl border border-gray-700 bg-gray-800 px-3 py-2.5 pr-10 text-sm text-white outline-none transition focus:border-blue-500"
+                >
+                  {SORTS.map((s) => (
+                    <option key={s} value={s}>
+                      {s.charAt(0).toUpperCase() + s.slice(1)}
+                    </option>
+                  ))}
+                </select>
 
-              <button
-                type="submit"
-                className="w-full rounded-lg bg-blue-600 px-5 py-2.5 text-sm text-white transition hover:bg-blue-700 sm:w-auto"
-              >
-                Search
-              </button>
+                <svg
+                  className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                >
+                  <path
+                    d="M7 10l5 5 5-5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
             </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+            <input
+              type="text"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              placeholder="Filter by author..."
+              className="w-full rounded-xl border border-gray-700 bg-gray-800 px-3 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
+            />
+
+            <button
+              type="submit"
+              className="w-full rounded-xl bg-blue-600 px-5 py-2.5 text-sm text-white transition hover:bg-blue-700 sm:w-auto"
+            >
+              Search
+            </button>
           </div>
         </form>
 
@@ -349,7 +373,6 @@ function SearchResultCard({ resource }) {
 
   return (
     <div className="rounded-xl border border-gray-800 bg-gray-900 p-4 transition hover:border-gray-700 sm:p-5">
-      {/* Top row */}
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -420,7 +443,7 @@ function SearchResultCard({ resource }) {
             href={resource.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="sm:ml-auto text-xs text-blue-400 hover:text-blue-300"
+            className="text-xs text-blue-400 hover:text-blue-300 sm:ml-auto"
           >
             Visit
           </a>
