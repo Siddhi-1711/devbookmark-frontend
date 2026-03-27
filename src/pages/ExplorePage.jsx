@@ -170,12 +170,24 @@ export default function ExplorePage() {
     } catch {}
   };
 
-  const fetchTags = async () => {
-    try {
-      const res = await client.get("/api/tags/trending?limit=15");
-      setTags(res.data);
-    } catch {}
-  };
+ const fetchTags = async () => {
+   try {
+     // 1. Try trending first
+     const trendingRes = await client.get("/api/tags/trending?limit=15");
+
+     if (Array.isArray(trendingRes.data) && trendingRes.data.length > 0) {
+       setTags(trendingRes.data);
+       return;
+     }
+
+     // 2. Fallback to popular if empty
+     const popularRes = await client.get("/api/tags/popular?limit=15");
+     setTags(popularRes.data || []);
+   } catch (err) {
+     console.error("Failed to fetch tags", err);
+     setTags([]);
+   }
+ };
 
   const fetchResources = async (pageToLoad = page, reset = false) => {
     if (!hasMore && !reset) return;
@@ -477,6 +489,11 @@ export default function ExplorePage() {
                         </div>
                       );
                     })}
+                {tags.length === 0 && (
+                  <p className="text-sm text-gray-500 text-center">
+                    No tags yet
+                  </p>
+                )}
                   </div>
                 </div>
 
