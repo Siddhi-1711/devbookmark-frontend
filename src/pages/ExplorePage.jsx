@@ -71,7 +71,7 @@ export default function ExplorePage() {
 
   const [resources, setResources] = useState([]);
   const [tags, setTags] = useState([]);
-
+const [tagType, setTagType] = useState("trending");
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
 
@@ -172,20 +172,21 @@ export default function ExplorePage() {
 
  const fetchTags = async () => {
    try {
-     // 1. Try trending first
      const trendingRes = await client.get("/api/tags/trending?limit=15");
 
      if (Array.isArray(trendingRes.data) && trendingRes.data.length > 0) {
        setTags(trendingRes.data);
+       setTagType("trending");
        return;
      }
 
-     // 2. Fallback to popular if empty
      const popularRes = await client.get("/api/tags/popular?limit=15");
      setTags(popularRes.data || []);
+     setTagType("popular");
    } catch (err) {
      console.error("Failed to fetch tags", err);
      setTags([]);
+     setTagType("trending");
    }
  };
 
@@ -423,7 +424,7 @@ export default function ExplorePage() {
             <div className="rounded-xl border border-gray-800 bg-gray-900 p-4">
               <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-white">
                 <Tag size={15} className="text-blue-400" />
-                Trending Tags
+                {tagType === "trending" ? "Trending Tags" : "Popular Tags"}
               </h3>
 
               <div>
