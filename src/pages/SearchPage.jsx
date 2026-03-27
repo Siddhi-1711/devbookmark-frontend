@@ -1,17 +1,16 @@
-// src/pages/SearchPage.jsx
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import client from "../api/client";
 import { useAuth } from "../store/authStore";
-import { Heart, Bookmark, Search, X } from "lucide-react";
-import { usePageTitle } from '../hooks/usePageTitle'
+import { Heart, Bookmark, Search, X, Filter } from "lucide-react";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 const TYPES = ["ALL", "ARTICLE", "VIDEO", "REPO", "DOC", "WRITTEN_POST"];
 const SORTS = ["latest", "oldest", "popular"];
 
 export default function SearchPage() {
-  usePageTitle('Search')
+  usePageTitle("Search");
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -24,7 +23,6 @@ export default function SearchPage() {
   const [total, setTotal] = useState(0);
   const [suggestions, setSuggestions] = useState({ titles: [], tags: [] });
 
-  // suggestions
   useEffect(() => {
     const t = setTimeout(() => {
       if (q.trim().length >= 2) fetchSuggestions();
@@ -34,7 +32,6 @@ export default function SearchPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q]);
 
-  // auto-search when type/sort changes (only if user has something to search)
   useEffect(() => {
     if (q || author || type !== "ALL") search();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,9 +39,11 @@ export default function SearchPage() {
 
   const fetchSuggestions = async () => {
     try {
-      const res = await client.get(`/api/search/suggestions?q=${encodeURIComponent(q.trim())}`);
+      const res = await client.get(
+        `/api/search/suggestions?q=${encodeURIComponent(q.trim())}`
+      );
       setSuggestions(res.data || { titles: [], tags: [] });
-    } catch (err) {
+    } catch {
       setSuggestions({ titles: [], tags: [] });
     }
   };
@@ -112,30 +111,47 @@ export default function SearchPage() {
   return (
     <div className="min-h-screen bg-gray-950">
       <Navbar />
-      <div className="max-w-4xl mx-auto px-4 pt-20 pb-16">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-white text-2xl font-bold">Search</h1>
+
+      <div className="mx-auto max-w-4xl px-4 pb-16 pt-20 sm:px-5">
+        {/* Header */}
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <h1 className="text-2xl font-bold text-white sm:text-3xl">Search</h1>
+            <p className="mt-1 text-sm text-gray-500">
+              Find resources by title, tags, author, and type.
+            </p>
+          </div>
+
           {anyFilter && (
             <button
               onClick={clearAll}
-              className="text-sm text-gray-400 hover:text-white transition"
+              className="inline-flex w-full items-center justify-center rounded-lg border border-gray-800 bg-gray-900 px-3 py-2 text-sm text-gray-400 transition hover:border-gray-700 hover:text-white sm:w-auto"
             >
               Clear all
             </button>
           )}
         </div>
 
-        <form onSubmit={search} className="mb-6">
-          <div className="relative mb-3">
-            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+        {/* Search form */}
+        <form
+          onSubmit={search}
+          className="mb-6 rounded-2xl border border-gray-800 bg-gray-900 p-4 sm:p-5"
+        >
+          {/* Search input */}
+          <div className="relative mb-4">
+            <Search
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            />
             <input
               type="text"
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Search resources, articles, links..."
-              className="w-full bg-gray-900 border border-gray-700 text-white rounded-xl pl-12 pr-12 py-3 focus:outline-none focus:border-blue-500 transition text-lg"
+              className="w-full rounded-xl border border-gray-700 bg-gray-900 py-3 pl-12 pr-12 text-base text-white transition placeholder:text-gray-500 focus:border-blue-500 focus:outline-none sm:text-lg"
               autoFocus
             />
+
             {q && (
               <button
                 type="button"
@@ -143,7 +159,7 @@ export default function SearchPage() {
                   setQ("");
                   setSuggestions({ titles: [], tags: [] });
                 }}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition hover:text-white"
                 aria-label="Clear query"
               >
                 <X size={18} />
@@ -151,7 +167,7 @@ export default function SearchPage() {
             )}
 
             {(suggestions.titles.length > 0 || suggestions.tags.length > 0) && (
-              <div className="absolute top-full left-0 right-0 bg-gray-900 border border-gray-700 rounded-xl mt-1 z-10 overflow-hidden">
+              <div className="absolute left-0 right-0 top-full z-10 mt-1 overflow-hidden rounded-xl border border-gray-700 bg-gray-900 shadow-xl">
                 {suggestions.titles.map((title) => (
                   <button
                     key={title}
@@ -159,14 +175,14 @@ export default function SearchPage() {
                     onClick={() => {
                       setQ(title);
                       setSuggestions({ titles: [], tags: [] });
-                      // search with the selected title
                       setTimeout(() => search(), 0);
                     }}
-                    className="w-full text-left px-4 py-2.5 text-gray-300 hover:bg-gray-800 text-sm"
+                    className="w-full px-4 py-2.5 text-left text-sm text-gray-300 hover:bg-gray-800"
                   >
                     {title}
                   </button>
                 ))}
+
                 {suggestions.tags.map((tag) => (
                   <button
                     key={tag}
@@ -176,7 +192,7 @@ export default function SearchPage() {
                       setSuggestions({ titles: [], tags: [] });
                       setTimeout(() => search(), 0);
                     }}
-                    className="w-full text-left px-4 py-2.5 text-blue-400 hover:bg-gray-800 text-sm"
+                    className="w-full px-4 py-2.5 text-left text-sm text-blue-400 hover:bg-gray-800"
                   >
                     #{tag}
                   </button>
@@ -185,70 +201,90 @@ export default function SearchPage() {
             )}
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-3">
-            {TYPES.map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => setType(t)}
-                className={`px-3 py-1.5 rounded-lg text-xs transition ${
-                  type === t
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-800 text-gray-400 hover:text-white"
-                }`}
-              >
-                {t === "ALL"
-                  ? "All Types"
-                  : t === "WRITTEN_POST"
-                  ? "Article"
-                  : t.charAt(0) + t.slice(1).toLowerCase()}
-              </button>
-            ))}
+          {/* Type chips */}
+          <div className="mb-4">
+            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-gray-500">
+              Type
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {TYPES.map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setType(t)}
+                  className={`rounded-lg px-3 py-2 text-xs transition sm:text-sm ${
+                    type === t
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-800 text-gray-400 hover:text-white"
+                  }`}
+                >
+                  {t === "ALL"
+                    ? "All Types"
+                    : t === "WRITTEN_POST"
+                    ? "Article"
+                    : t.charAt(0) + t.slice(1).toLowerCase()}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="flex gap-2 flex-wrap items-center">
-            {SORTS.map((s) => (
+          {/* Sort + author + submit */}
+          <div className="space-y-4">
+            <div>
+              <p className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-gray-500">
+                <Filter size={13} />
+                Sort
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {SORTS.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => setSort(s)}
+                    className={`rounded-lg px-3 py-2 text-xs capitalize transition sm:text-sm ${
+                      sort === s
+                        ? "bg-gray-700 text-white"
+                        : "bg-gray-800 text-gray-400 hover:text-white"
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+              <input
+                type="text"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                placeholder="Filter by author..."
+                className="w-full rounded-lg border border-gray-700 bg-gray-800 px-3 py-2.5 text-sm text-white placeholder:text-gray-500 focus:border-blue-500 focus:outline-none"
+              />
+
               <button
-                key={s}
-                type="button"
-                onClick={() => setSort(s)}
-                className={`px-3 py-1.5 rounded-lg text-xs capitalize transition ${
-                  sort === s
-                    ? "bg-gray-700 text-white"
-                    : "bg-gray-800 text-gray-400 hover:text-white"
-                }`}
+                type="submit"
+                className="w-full rounded-lg bg-blue-600 px-5 py-2.5 text-sm text-white transition hover:bg-blue-700 sm:w-auto"
               >
-                {s}
+                Search
               </button>
-            ))}
-
-            <input
-              type="text"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              placeholder="Filter by author..."
-              className="ml-auto bg-gray-800 border border-gray-700 text-white rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-blue-500 w-48"
-            />
-
-            <button
-              type="submit"
-              className="px-5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition"
-            >
-              Search
-            </button>
+            </div>
           </div>
         </form>
 
         {total > 0 && (
-          <p className="text-gray-500 text-sm mb-4">{total} results found</p>
+          <p className="mb-4 text-sm text-gray-500">{total} results found</p>
         )}
 
         {loading ? (
           <div className="space-y-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-gray-900 border border-gray-800 rounded-xl p-5 animate-pulse">
-                <div className="h-4 bg-gray-800 rounded w-3/4 mb-3" />
-                <div className="h-3 bg-gray-800 rounded w-1/2" />
+              <div
+                key={i}
+                className="animate-pulse rounded-xl border border-gray-800 bg-gray-900 p-4 sm:p-5"
+              >
+                <div className="mb-3 h-4 w-3/4 rounded bg-gray-800" />
+                <div className="h-3 w-1/2 rounded bg-gray-800" />
               </div>
             ))}
           </div>
@@ -259,10 +295,13 @@ export default function SearchPage() {
             ))}
 
             {results.length === 0 && q && !loading && (
-              <div className="text-center text-gray-500 py-16">No results for "{q}"</div>
+              <div className="py-16 text-center text-gray-500">
+                No results for "{q}"
+              </div>
             )}
+
             {!q && results.length === 0 && (
-              <div className="text-center text-gray-500 py-16">
+              <div className="py-16 text-center text-gray-500">
                 Start typing to search resources
               </div>
             )}
@@ -291,7 +330,7 @@ function SearchResultCard({ resource }) {
         setLikeCount((c) => c + 1);
       }
       setLiked((v) => !v);
-    } catch (err) {}
+    } catch {}
   };
 
   const toggleSave = async () => {
@@ -305,53 +344,73 @@ function SearchResultCard({ resource }) {
         setSaveCount((c) => c + 1);
       }
       setSaved((v) => !v);
-    } catch (err) {}
+    } catch {}
   };
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition">
-      <div className="flex items-center gap-2 mb-2">
-        <Link to={`/users/${resource.ownerId}`} className="text-gray-400 text-sm hover:text-white transition">
-          {resource.ownerName}
-        </Link>
-        <span className="text-gray-600 text-xs">•</span>
-        <span className="text-gray-600 text-xs">{new Date(resource.createdAt).toLocaleDateString()}</span>
-        <span className="ml-auto text-xs px-2 py-0.5 bg-gray-800 text-gray-400 rounded">
+    <div className="rounded-xl border border-gray-800 bg-gray-900 p-4 transition hover:border-gray-700 sm:p-5">
+      {/* Top row */}
+      <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <Link
+              to={`/users/${resource.ownerId}`}
+              className="truncate text-gray-400 transition hover:text-white"
+            >
+              {resource.ownerName}
+            </Link>
+            <span className="text-xs text-gray-600">•</span>
+            <span className="text-xs text-gray-600">
+              {new Date(resource.createdAt).toLocaleDateString()}
+            </span>
+          </div>
+        </div>
+
+        <span className="w-fit rounded bg-gray-800 px-2 py-0.5 text-xs text-gray-400">
           {resource.type === "WRITTEN_POST" ? "Article" : resource.type}
         </span>
       </div>
 
       <Link to={`/resources/${resource.id}`}>
-        <h3 className="text-white font-semibold text-lg mb-1 hover:text-blue-400 transition">
+        <h3 className="mb-1 break-words text-lg font-semibold text-white transition hover:text-blue-400">
           {resource.title}
         </h3>
       </Link>
 
       {resource.description && (
-        <p className="text-gray-400 text-sm mb-3 line-clamp-2">{resource.description}</p>
+        <p className="mb-3 line-clamp-2 break-words text-sm text-gray-400">
+          {resource.description}
+        </p>
       )}
 
       {resource.tags?.length > 0 && (
-        <div className="flex flex-wrap gap-1 mb-3">
+        <div className="mb-3 flex flex-wrap gap-1.5">
           {resource.tags.map((tag) => (
-            <span key={tag} className="px-2 py-0.5 bg-gray-800 text-blue-400 text-xs rounded">
+            <span
+              key={tag}
+              className="rounded bg-gray-800 px-2 py-0.5 text-xs text-blue-400 break-all"
+            >
               #{tag}
             </span>
           ))}
         </div>
       )}
 
-      <div className="flex items-center gap-3 text-sm">
+      <div className="flex flex-wrap items-center gap-3 text-sm">
         <button
           onClick={toggleLike}
-          className={`flex items-center gap-1 transition ${liked ? "text-red-400" : "text-gray-500 hover:text-red-400"}`}
+          className={`flex items-center gap-1 transition ${
+            liked ? "text-red-400" : "text-gray-500 hover:text-red-400"
+          }`}
         >
           <Heart size={14} fill={liked ? "currentColor" : "none"} /> {likeCount}
         </button>
 
         <button
           onClick={toggleSave}
-          className={`flex items-center gap-1 transition ${saved ? "text-blue-400" : "text-gray-500 hover:text-blue-400"}`}
+          className={`flex items-center gap-1 transition ${
+            saved ? "text-blue-400" : "text-gray-500 hover:text-blue-400"
+          }`}
         >
           <Bookmark size={14} fill={saved ? "currentColor" : "none"} /> {saveCount}
         </button>
@@ -361,7 +420,7 @@ function SearchResultCard({ resource }) {
             href={resource.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-auto text-blue-400 hover:text-blue-300 text-xs"
+            className="sm:ml-auto text-xs text-blue-400 hover:text-blue-300"
           >
             Visit
           </a>
