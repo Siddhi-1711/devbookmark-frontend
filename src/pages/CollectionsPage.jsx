@@ -46,7 +46,10 @@ export default function CollectionsPage() {
       setDescription('')
       setIsPublic(true)
     } catch (err) {
-      const msg = err.response?.data?.fieldErrors?.name || err.response?.data?.message || 'Failed to create collection'
+      const msg =
+        err.response?.data?.fieldErrors?.name ||
+        err.response?.data?.message ||
+        'Failed to create collection'
       alert(msg)
     } finally {
       setCreating(false)
@@ -65,75 +68,118 @@ export default function CollectionsPage() {
 
   return (
     <AppLayout maxWidth="max-w-4xl">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-white text-2xl font-bold flex items-center gap-2">
-            <FolderOpen size={22} className="text-blue-400" />
-            Collections
+      {/* Header */}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="flex flex-wrap items-center gap-2 text-2xl font-bold text-white sm:text-3xl">
+            <FolderOpen size={22} className="shrink-0 text-blue-400" />
+            <span>Collections</span>
           </h1>
-          <p className="text-gray-400 text-sm mt-1">Organize your resources into collections</p>
+          <p className="mt-1 max-w-md text-sm leading-relaxed text-gray-400">
+            Organize your resources into collections
+          </p>
         </div>
+
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition hover:bg-blue-700 sm:w-auto sm:px-5 sm:py-2.5"
         >
-          <Plus size={16} /> New Collection
+          <Plus size={16} />
+          <span>New Collection</span>
         </button>
       </div>
 
+      {/* Create Modal */}
       {showCreate && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4"
-          onClick={() => setShowCreate(false)}>
-          <div className="bg-gray-900 border border-gray-800 rounded-xl w-full max-w-md p-6"
-            onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-semibold">New Collection</h3>
-              <button onClick={() => setShowCreate(false)} className="text-gray-400 hover:text-white">
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:px-4"
+          onClick={() => setShowCreate(false)}
+        >
+          <div
+            className="w-full rounded-t-2xl border border-gray-800 bg-gray-900 p-4 sm:max-w-md sm:rounded-2xl sm:p-6"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h3 className="text-base font-semibold text-white sm:text-lg">
+                New Collection
+              </h3>
+              <button
+                onClick={() => setShowCreate(false)}
+                className="rounded-lg p-1 text-gray-400 transition hover:bg-gray-800 hover:text-white"
+              >
                 <X size={20} />
               </button>
             </div>
+
             <form onSubmit={createCollection} className="space-y-4">
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Name</label>
+                <label className="mb-1 block text-sm text-gray-400">Name</label>
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500"
+                  className="w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-2.5 text-white outline-none transition focus:border-blue-500"
                   placeholder="e.g. Spring Boot Resources"
                 />
               </div>
+
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Description</label>
+                <label className="mb-1 block text-sm text-gray-400">Description</label>
                 <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
-                  className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2.5 focus:outline-none focus:border-blue-500 resize-none"
+                  className="w-full resize-none rounded-lg border border-gray-700 bg-gray-800 px-4 py-2.5 text-white outline-none transition focus:border-blue-500"
                   placeholder="What's in this collection?"
                 />
               </div>
+
               <div>
-                <label className="block text-sm text-gray-400 mb-2">Visibility</label>
-                <div className="flex gap-2">
-                  <button type="button" onClick={() => setIsPublic(true)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition ${isPublic ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
-                    <Globe size={14} /> Public
+                <label className="mb-2 block text-sm text-gray-400">Visibility</label>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsPublic(true)}
+                    className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm transition ${
+                      isPublic
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-800 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <Globe size={14} />
+                    Public
                   </button>
-                  <button type="button" onClick={() => setIsPublic(false)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition ${!isPublic ? 'bg-blue-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}>
-                    <Lock size={14} /> Private
+
+                  <button
+                    type="button"
+                    onClick={() => setIsPublic(false)}
+                    className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm transition ${
+                      !isPublic
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-800 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <Lock size={14} />
+                    Private
                   </button>
                 </div>
               </div>
-              <div className="flex gap-3 pt-2">
-                <button type="submit" disabled={creating}
-                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-sm rounded-lg transition">
+
+              <div className="flex flex-col gap-2 pt-2 sm:flex-row">
+                <button
+                  type="submit"
+                  disabled={creating}
+                  className="w-full rounded-lg bg-blue-600 px-5 py-2.5 text-sm text-white transition hover:bg-blue-700 disabled:opacity-50 sm:w-auto"
+                >
                   {creating ? 'Creating...' : 'Create'}
                 </button>
-                <button type="button" onClick={() => setShowCreate(false)}
-                  className="px-5 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm rounded-lg transition">
+
+                <button
+                  type="button"
+                  onClick={() => setShowCreate(false)}
+                  className="w-full rounded-lg bg-gray-800 px-5 py-2.5 text-sm text-white transition hover:bg-gray-700 sm:w-auto"
+                >
                   Cancel
                 </button>
               </div>
@@ -142,54 +188,92 @@ export default function CollectionsPage() {
         </div>
       )}
 
+      {/* Loading */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 bg-gray-800 rounded-xl animate-pulse" />
+            <div
+              key={i}
+              className="h-32 rounded-xl border border-gray-800 bg-gray-900 animate-pulse"
+            />
           ))}
         </div>
       ) : collections.length === 0 ? (
-        <div className="text-center py-20">
-          <FolderOpen size={48} className="text-gray-700 mx-auto mb-4" />
-          <p className="text-gray-400 text-lg mb-2">No collections yet</p>
-          <p className="text-gray-600 text-sm mb-4">Create your first collection to organize resources</p>
-          <button onClick={() => setShowCreate(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-lg transition">
+        /* Empty state */
+        <div className="flex min-h-[55vh] flex-col items-center justify-center px-4 py-12 text-center sm:min-h-[60vh] sm:py-16">
+          <FolderOpen size={52} className="mb-4 text-gray-700 sm:size-[56px]" />
+          <p className="mb-2 text-xl text-gray-300 sm:text-2xl">
+            No collections yet
+          </p>
+          <p className="mb-6 max-w-sm text-sm leading-relaxed text-gray-500 sm:text-base">
+            Create your first collection to organize resources
+          </p>
+          <button
+            onClick={() => setShowCreate(true)}
+            className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-blue-700 sm:px-6"
+          >
             Create Collection
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        /* Collection grid */
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {collections.map(c => (
-            <div key={c.id} className="bg-gray-900 border border-gray-800 rounded-xl p-5 hover:border-gray-700 transition">
-              <div className="flex items-start justify-between mb-3">
-                <Link to={`/collections/${c.id}`} className="flex-1">
-                  <h3 className="text-white font-semibold hover:text-blue-400 transition">{c.name}</h3>
+            <div
+              key={c.id}
+              className="rounded-xl border border-gray-800 bg-gray-900 p-4 transition hover:border-gray-700 sm:p-5"
+            >
+              <div className="mb-3 flex items-start gap-3">
+                <Link to={`/collections/${c.id}`} className="min-w-0 flex-1">
+                  <h3 className="break-words text-base font-semibold text-white transition hover:text-blue-400 sm:text-lg">
+                    {c.name}
+                  </h3>
+
                   {c.description && (
-                    <p className="text-gray-400 text-sm mt-1 line-clamp-2">{c.description}</p>
+                    <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-gray-400 break-words">
+                      {c.description}
+                    </p>
                   )}
                 </Link>
-                <div className="flex items-center gap-2 ml-3 shrink-0">
+
+                <div className="ml-1 flex shrink-0 items-center gap-1 sm:gap-2">
                   <button
-                    onClick={() => navigate(`/explore?pickFor=${c.id}&pickName=${encodeURIComponent(c.name)}`)}
+                    onClick={() =>
+                      navigate(`/explore?pickFor=${c.id}&pickName=${encodeURIComponent(c.name)}`)
+                    }
                     title="Add resources from Explore"
-                    className="text-gray-600 hover:text-blue-400 transition"
+                    className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-800 hover:text-blue-400"
                   >
                     <BookPlus size={15} />
                   </button>
-                  <button onClick={() => deleteCollection(c.id)}
-                    className="text-gray-600 hover:text-red-400 transition">
+
+                  <button
+                    onClick={() => deleteCollection(c.id)}
+                    className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-800 hover:text-red-400"
+                  >
                     <Trash2 size={15} />
                   </button>
                 </div>
               </div>
-              <div className="flex items-center gap-3 text-xs text-gray-500">
-                {c.isPublic
-                  ? <span className="flex items-center gap-1"><Globe size={12} /> Public</span>
-                  : <span className="flex items-center gap-1"><Lock size={12} /> Private</span>
-                }
+
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-gray-500">
+                {c.isPublic ? (
+                  <span className="flex items-center gap-1">
+                    <Globe size={12} />
+                    Public
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1">
+                    <Lock size={12} />
+                    Private
+                  </span>
+                )}
+
                 <span>{c.itemCount ?? 0} resources</span>
-                <span className="ml-auto">{new Date(c.createdAt).toLocaleDateString()}</span>
+
+                <span className="sm:ml-auto">
+                  {c.createdAt ? new Date(c.createdAt).toLocaleDateString() : ''}
+                </span>
               </div>
             </div>
           ))}
