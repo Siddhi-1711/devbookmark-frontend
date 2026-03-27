@@ -1,5 +1,3 @@
-// src/pages/SettingsPage.jsx
-// src/pages/SettingsPage.jsx
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -20,6 +18,7 @@ import {
   Pencil,
   ShieldAlert,
 } from "lucide-react";
+
 const TABS = [
   { key: "profile", label: "Profile", icon: User },
   { key: "password", label: "Password", icon: Lock },
@@ -34,46 +33,53 @@ function Banner({ msg, onClose }) {
 
   return (
     <div
-      className={`mb-5 border rounded-xl px-4 py-3 flex items-start gap-3 ${
+      className={`mb-5 rounded-xl border px-4 py-3 ${
         isSuccess
-          ? "bg-green-500/10 border-green-500/20 text-green-200"
-          : "bg-red-500/10 border-red-500/20 text-red-200"
+          ? "border-green-500/20 bg-green-500/10 text-green-200"
+          : "border-red-500/20 bg-red-500/10 text-red-200"
       }`}
       role="status"
     >
-      <Icon className={isSuccess ? "text-green-400 mt-0.5" : "text-red-400 mt-0.5"} size={18} />
-      <div className="flex-1 min-w-0">
-        {msg.title ? (
-          <p className="text-sm font-semibold text-white/90">{msg.title}</p>
-        ) : null}
-        <p className="text-sm text-white/80">{msg.text}</p>
+      <div className="flex items-start gap-3">
+        <Icon
+          className={isSuccess ? "mt-0.5 text-green-400" : "mt-0.5 text-red-400"}
+          size={18}
+        />
+        <div className="min-w-0 flex-1">
+          {msg.title ? (
+            <p className="text-sm font-semibold text-white/90">{msg.title}</p>
+          ) : null}
+          <p className="break-words text-sm text-white/80">{msg.text}</p>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="rounded-lg p-1 transition hover:bg-white/5"
+          aria-label="Dismiss"
+        >
+          <X size={16} className="text-white/70" />
+        </button>
       </div>
-      <button
-        type="button"
-        onClick={onClose}
-        className="p-1 rounded-lg hover:bg-white/5 transition"
-        aria-label="Dismiss"
-      >
-        <X size={16} className="text-white/70" />
-      </button>
     </div>
   );
 }
 
 function Card({ title, icon: Icon, subtitle, right, children }) {
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
-      <div className="px-6 py-5 border-b border-gray-800 flex items-start justify-between gap-4">
-        <div>
-          <h2 className="text-white font-semibold flex items-center gap-2">
-            {Icon ? <Icon size={16} className="text-blue-400" /> : null}
-            {title}
+    <div className="overflow-hidden rounded-2xl border border-gray-800 bg-gray-900">
+      <div className="flex flex-col gap-3 border-b border-gray-800 px-4 py-4 sm:px-5 sm:py-5 md:flex-row md:items-start md:justify-between md:gap-4 lg:px-6">
+        <div className="min-w-0">
+          <h2 className="flex flex-wrap items-center gap-2 font-semibold text-white">
+            {Icon ? <Icon size={16} className="shrink-0 text-blue-400" /> : null}
+            <span>{title}</span>
           </h2>
-          {subtitle ? <p className="text-gray-500 text-sm mt-1">{subtitle}</p> : null}
+          {subtitle ? (
+            <p className="mt-1 break-words text-sm text-gray-500">{subtitle}</p>
+          ) : null}
         </div>
-        {right ? <div className="shrink-0">{right}</div> : null}
+        {right ? <div className="shrink-0 self-start md:self-auto">{right}</div> : null}
       </div>
-      <div className="p-6">{children}</div>
+      <div className="p-4 sm:p-5 lg:p-6">{children}</div>
     </div>
   );
 }
@@ -81,12 +87,12 @@ function Card({ title, icon: Icon, subtitle, right, children }) {
 function Field({ label, hint, children, right }) {
   return (
     <div className="space-y-1.5">
-      <div className="flex items-end justify-between gap-3">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between sm:gap-3">
         <label className="block text-sm text-gray-300">{label}</label>
         {right ? <div className="shrink-0">{right}</div> : null}
       </div>
       {children}
-      {hint ? <p className="text-gray-500 text-xs">{hint}</p> : null}
+      {hint ? <p className="break-words text-xs text-gray-500">{hint}</p> : null}
     </div>
   );
 }
@@ -95,8 +101,8 @@ function Input(props) {
   return (
     <input
       {...props}
-      className={`w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 outline-none
-      focus:border-blue-500/70 focus:ring-2 focus:ring-blue-500/15 transition ${props.className || ""}`}
+      className={`w-full rounded-xl border border-gray-700 bg-gray-800 px-4 py-2.5 text-white outline-none transition
+      focus:border-blue-500/70 focus:ring-2 focus:ring-blue-500/15 ${props.className || ""}`}
     />
   );
 }
@@ -105,10 +111,8 @@ function Textarea(props) {
   return (
     <textarea
       {...props}
-      className={`w-full bg-gray-800 border border-gray-700 text-white rounded-xl px-4 py-2.5 outline-none
-      focus:border-blue-500/70 focus:ring-2 focus:ring-blue-500/15 transition resize-none ${
-        props.className || ""
-      }`}
+      className={`w-full resize-none rounded-xl border border-gray-700 bg-gray-800 px-4 py-2.5 text-white outline-none transition
+      focus:border-blue-500/70 focus:ring-2 focus:ring-blue-500/15 ${props.className || ""}`}
     />
   );
 }
@@ -118,9 +122,8 @@ function PrimaryButton({ children, loading, ...props }) {
     <button
       {...props}
       disabled={props.disabled || loading}
-      className={`px-5 py-2.5 rounded-xl text-sm font-medium transition
-      bg-blue-600 hover:bg-blue-700 text-white
-      cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${props.className || ""}`}
+      className={`rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700
+      disabled:cursor-not-allowed disabled:opacity-50 ${props.className || ""}`}
     >
       {loading ? "Please wait..." : children}
     </button>
@@ -131,8 +134,7 @@ function SoftButton({ children, ...props }) {
   return (
     <button
       {...props}
-      className={`px-4 py-2.5 rounded-xl text-sm font-medium transition
-      bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white/90 ${props.className || ""}`}
+      className={`rounded-xl border border-gray-700 bg-gray-800 px-4 py-2.5 text-sm font-medium text-white/90 transition hover:bg-gray-700 ${props.className || ""}`}
     >
       {children}
     </button>
@@ -143,8 +145,7 @@ function DangerButton({ children, ...props }) {
   return (
     <button
       {...props}
-      className={`px-4 py-2.5 rounded-xl text-sm font-medium transition
-      bg-red-600/20 hover:bg-red-600/30 border border-red-600/20 text-red-300 ${props.className || ""}`}
+      className={`rounded-xl border border-red-600/20 bg-red-600/20 px-4 py-2.5 text-sm font-medium text-red-300 transition hover:bg-red-600/30 ${props.className || ""}`}
     >
       {children}
     </button>
@@ -152,7 +153,7 @@ function DangerButton({ children, ...props }) {
 }
 
 export default function SettingsPage() {
-  usePageTitle('Settings')
+  usePageTitle("Settings");
   const { user, loginUser, logoutUser } = useAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -175,18 +176,58 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-gray-950">
       <Navbar />
 
-      <div className="max-w-5xl mx-auto px-4 pt-20 pb-16">
-        <div className="mb-8">
-          <h1 className="text-white text-2xl font-bold">Settings</h1>
-          <p className="text-gray-500 text-sm mt-1">
+      <div className="mx-auto max-w-5xl px-4 pb-16 pt-20 sm:px-5 lg:px-6">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl font-bold text-white sm:text-3xl">Settings</h1>
+          <p className="mt-1 max-w-2xl text-sm leading-relaxed text-gray-500">
             Manage your profile, security, and publication details in one place.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-6">
-          {/* Sidebar */}
-          <aside className="md:sticky md:top-20 h-fit">
-            <div className="bg-gray-900 border border-gray-800 rounded-2xl p-2">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[240px_minmax(0,1fr)]">
+          {/* Mobile tabs */}
+          <div className="lg:hidden">
+            <div className="-mx-1 overflow-x-auto pb-1">
+              <div className="flex min-w-max gap-2 px-1">
+                {TABS.map((t) => {
+                  const Icon = t.icon;
+                  const active = activeTab === t.key;
+
+                  return (
+                    <button
+                      key={t.key}
+                      onClick={() => switchTab(t.key)}
+                      className={`inline-flex shrink-0 items-center gap-2 rounded-xl border px-3 py-2.5 text-sm transition ${
+                        active
+                          ? "border-blue-600/25 bg-blue-600/15 text-blue-300"
+                          : "border-gray-800 bg-gray-900 text-gray-300 hover:border-gray-700 hover:bg-gray-800"
+                      } ${
+                        t.key === "danger" && !active
+                          ? "text-red-300 hover:bg-red-400/10"
+                          : ""
+                      }`}
+                    >
+                      <Icon size={16} className={active ? "text-blue-300" : "text-gray-400"} />
+                      <span>{t.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-gray-800 bg-gray-900 p-4">
+              <p className="text-sm font-medium text-gray-300">
+                {activeMeta?.label || "Settings"}
+              </p>
+              <p className="mt-1 text-xs text-gray-500">
+                Changes are saved securely. Some actions can’t be undone.
+              </p>
+            </div>
+          </div>
+
+          {/* Desktop sidebar */}
+          <aside className="hidden h-fit lg:block lg:sticky lg:top-20">
+            <div className="rounded-2xl border border-gray-800 bg-gray-900 p-2">
               <nav className="space-y-1">
                 {TABS.map((t) => {
                   const Icon = t.icon;
@@ -196,29 +237,28 @@ export default function SettingsPage() {
                     <button
                       key={t.key}
                       onClick={() => switchTab(t.key)}
-                      className={`cursor-pointer w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition text-left border
-                        ${
-                          active
-                            ? "bg-blue-600/15 text-blue-300 border-blue-600/25"
-                            : "bg-transparent text-gray-300 border-transparent hover:bg-gray-800 hover:border-gray-700"
-                        }
-                        ${t.key === "danger" && !active ? "text-red-300 hover:bg-red-400/10" : ""}`}
+                      className={`w-full cursor-pointer rounded-xl border px-3 py-2.5 text-left text-sm transition ${
+                        active
+                          ? "border-blue-600/25 bg-blue-600/15 text-blue-300"
+                          : "border-transparent bg-transparent text-gray-300 hover:border-gray-700 hover:bg-gray-800"
+                      } ${t.key === "danger" && !active ? "text-red-300 hover:bg-red-400/10" : ""}`}
                     >
-                      <Icon size={16} className={active ? "text-blue-300" : "text-gray-400"} />
-                      <span className="flex-1">{t.label}</span>
-                      {active ? <span className="text-xs text-white/50">Active</span> : null}
+                      <span className="flex items-center gap-3">
+                        <Icon size={16} className={active ? "text-blue-300" : "text-gray-400"} />
+                        <span className="flex-1">{t.label}</span>
+                        {active ? <span className="text-xs text-white/50">Active</span> : null}
+                      </span>
                     </button>
                   );
                 })}
               </nav>
             </div>
 
-            {/* small helper */}
-            <div className="mt-4 bg-gray-900 border border-gray-800 rounded-2xl p-4">
-              <p className="text-gray-300 text-sm font-medium">
+            <div className="mt-4 rounded-2xl border border-gray-800 bg-gray-900 p-4">
+              <p className="text-sm font-medium text-gray-300">
                 {activeMeta?.label || "Settings"}
               </p>
-              <p className="text-gray-500 text-xs mt-1">
+              <p className="mt-1 text-xs text-gray-500">
                 Changes are saved securely. Some actions can’t be undone.
               </p>
             </div>
@@ -229,7 +269,9 @@ export default function SettingsPage() {
             {activeTab === "profile" && <ProfileTab user={user} loginUser={loginUser} />}
             {activeTab === "password" && <PasswordTab />}
             {activeTab === "publication" && <PublicationTab />}
-            {activeTab === "danger" && <DangerTab logoutUser={logoutUser} navigate={navigate} />}
+            {activeTab === "danger" && (
+              <DangerTab logoutUser={logoutUser} navigate={navigate} />
+            )}
           </main>
         </div>
       </div>
@@ -258,7 +300,6 @@ function ProfileTab({ user, loginUser }) {
     setMsg(null);
     try {
       const res = await client.put("/api/users/me", { name, username, bio, avatarUrl });
-      // Update stored user with all returned fields
       loginUser({ ...user, ...res.data }, localStorage.getItem("token"));
       setMsg({ type: "success", title: "Saved", text: "Your profile has been updated." });
     } catch (err) {
@@ -280,9 +321,7 @@ function ProfileTab({ user, loginUser }) {
     >
       <Banner msg={msg} onClose={() => setMsg(null)} />
       <form onSubmit={save} className="space-y-5">
-
-        {/* Avatar */}
-        <div className="bg-gray-800/40 border border-gray-700 rounded-2xl p-4">
+        <div className="rounded-2xl border border-gray-700 bg-gray-800/40 p-4">
           <ImageUpload value={avatarUrl} onChange={setAvatarUrl} label="Profile Picture" />
         </div>
 
@@ -301,7 +340,7 @@ function ProfileTab({ user, loginUser }) {
           hint="Your unique handle — lowercase letters, numbers and underscores only."
         >
           <div className="flex items-center gap-2">
-            <span className="text-gray-500 text-sm shrink-0">@</span>
+            <span className="shrink-0 text-sm text-gray-500">@</span>
             <Input
               type="text"
               value={username}
@@ -321,15 +360,15 @@ function ProfileTab({ user, loginUser }) {
             maxLength={300}
             placeholder="What do you build or learn?"
           />
-          <p className="text-gray-600 text-xs text-right">{bio.length}/300</p>
+          <p className="text-right text-xs text-gray-600">{bio.length}/300</p>
         </Field>
 
         <Field label="Email" hint="Email cannot be changed right now.">
           <Input type="email" value={user?.email || ""} disabled className="text-gray-500" />
         </Field>
 
-        <div className="flex items-center gap-3 pt-1">
-          <PrimaryButton type="submit" loading={loading}>
+        <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center">
+          <PrimaryButton type="submit" loading={loading} className="w-full sm:w-auto">
             Save Changes
           </PrimaryButton>
           <span className="text-xs text-gray-500">Changes apply immediately.</span>
@@ -354,7 +393,11 @@ function PasswordTab() {
       return;
     }
     if (newPass.length < 6) {
-      setMsg({ type: "error", title: "Too short", text: "Password must be at least 6 characters." });
+      setMsg({
+        type: "error",
+        title: "Too short",
+        text: "Password must be at least 6 characters.",
+      });
       return;
     }
 
@@ -385,7 +428,7 @@ function PasswordTab() {
       icon={Lock}
       subtitle="Use a strong password you don’t reuse elsewhere."
       right={
-        <span className="inline-flex items-center gap-2 text-xs text-gray-400 bg-gray-800 border border-gray-700 rounded-xl px-3 py-1.5">
+        <span className="inline-flex items-center gap-2 rounded-xl border border-gray-700 bg-gray-800 px-3 py-1.5 text-xs text-gray-400">
           <ShieldAlert size={14} className="text-gray-400" />
           Security
         </span>
@@ -403,7 +446,7 @@ function PasswordTab() {
           />
         </Field>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <Field label="New Password" hint="Minimum 6 characters.">
             <Input
               type="password"
@@ -424,11 +467,13 @@ function PasswordTab() {
           </Field>
         </div>
 
-        <div className="flex items-center gap-3 pt-1">
-          <PrimaryButton type="submit" loading={loading}>
+        <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center">
+          <PrimaryButton type="submit" loading={loading} className="w-full sm:w-auto">
             Update Password
           </PrimaryButton>
-          <span className="text-xs text-gray-500">You may need to login again on other devices.</span>
+          <span className="text-xs text-gray-500">
+            You may need to login again on other devices.
+          </span>
         </div>
       </form>
     </Card>
@@ -438,10 +483,7 @@ function PasswordTab() {
 function PublicationTab() {
   const [pub, setPub] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  // edit mode: false => show summary card only; true => show form
   const [editOpen, setEditOpen] = useState(false);
-
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState(null);
 
@@ -465,10 +507,10 @@ function PublicationTab() {
       setBio(res.data.bio || "");
       setSlug(res.data.slug || "");
       setLogoUrl(res.data.logoUrl || "");
-      setEditOpen(false); // close by default => clear UX
+      setEditOpen(false);
     } catch {
       setPub(null);
-      setEditOpen(true); // if none exists, open create form
+      setEditOpen(true);
     } finally {
       setLoading(false);
     }
@@ -502,12 +544,16 @@ function PublicationTab() {
         const res = await client.put("/api/publications", payload);
         setPub(res.data);
         setMsg({ type: "success", title: "Updated", text: "Publication details saved." });
-        setEditOpen(false); // ✅ closes after update
+        setEditOpen(false);
       } else {
         const res = await client.post("/api/publications", payload);
         setPub(res.data);
-        setMsg({ type: "success", title: "Created", text: "Publication created successfully." });
-        setEditOpen(false); // ✅ closes after create
+        setMsg({
+          type: "success",
+          title: "Created",
+          text: "Publication created successfully.",
+        });
+        setEditOpen(false);
       }
     } catch (err) {
       setMsg({
@@ -529,17 +575,20 @@ function PublicationTab() {
       setBio("");
       setSlug("");
       setLogoUrl("");
-      setEditOpen(true); // go back to create mode
+      setEditOpen(true);
       setMsg({ type: "success", title: "Deleted", text: "Publication deleted." });
     } catch {
-      setMsg({ type: "error", title: "Delete failed", text: "Failed to delete publication." });
+      setMsg({
+        type: "error",
+        title: "Delete failed",
+        text: "Failed to delete publication.",
+      });
     }
   };
 
   const closeForm = () => {
     setMsg(null);
     if (pub) {
-      // reset draft back to saved data
       setName(pub.name || "");
       setBio(pub.bio || "");
       setSlug(pub.slug || "");
@@ -550,11 +599,11 @@ function PublicationTab() {
 
   if (loading) {
     return (
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 animate-pulse space-y-4">
-        <div className="h-5 bg-gray-800 rounded w-1/3" />
-        <div className="h-10 bg-gray-800 rounded" />
-        <div className="h-10 bg-gray-800 rounded" />
-        <div className="h-10 bg-gray-800 rounded" />
+      <div className="space-y-4 rounded-2xl border border-gray-800 bg-gray-900 p-4 sm:p-5 lg:p-6 animate-pulse">
+        <div className="h-5 w-1/3 rounded bg-gray-800" />
+        <div className="h-10 rounded bg-gray-800" />
+        <div className="h-10 rounded bg-gray-800" />
+        <div className="h-10 rounded bg-gray-800" />
       </div>
     );
   }
@@ -563,7 +612,7 @@ function PublicationTab() {
     <Link
       to={`/p/${pub.slug}`}
       target="_blank"
-      className="inline-flex items-center gap-2 text-blue-300 hover:text-blue-200 text-xs transition"
+      className="inline-flex items-center gap-2 text-xs text-blue-300 transition hover:text-blue-200"
     >
       <ExternalLink size={14} /> View Page
     </Link>
@@ -576,69 +625,69 @@ function PublicationTab() {
       subtitle="Create a publication page for your writing and resources."
       right={viewLink}
     >
-      {/* ✅ Message stays inside the card, not at the top of the whole page */}
       <Banner msg={msg} onClose={() => setMsg(null)} />
 
-      {/* Summary card (when publication exists) */}
       {pub && !editOpen ? (
         <div className="space-y-5">
-          <div className="flex items-center gap-4 p-4 bg-gray-800/60 border border-gray-700 rounded-2xl">
-            <div className="w-14 h-14 rounded-2xl overflow-hidden bg-gray-700 shrink-0">
+          <div className="flex flex-col gap-4 rounded-2xl border border-gray-700 bg-gray-800/60 p-4 sm:flex-row sm:items-center">
+            <div className="h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-gray-700">
               {pub.logoUrl ? (
                 <img
                   src={pub.logoUrl}
                   alt={pub.name}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                   onError={(e) => (e.currentTarget.style.display = "none")}
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-white font-bold text-lg bg-blue-600">
+                <div className="flex h-full w-full items-center justify-center bg-blue-600 text-lg font-bold text-white">
                   {pub.name?.[0]?.toUpperCase()}
                 </div>
               )}
             </div>
 
-            <div className="flex-1 min-w-0">
-              <p className="text-white font-semibold truncate">{pub.name}</p>
-              <p className="text-gray-500 text-sm truncate">devbookmark.com/p/{pub.slug}</p>
-              {pub.bio ? <p className="text-gray-400 text-sm mt-1 line-clamp-2">{pub.bio}</p> : null}
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-semibold text-white">{pub.name}</p>
+              <p className="truncate text-sm text-gray-500">devbookmark.com/p/{pub.slug}</p>
+              {pub.bio ? (
+                <p className="mt-1 line-clamp-2 break-words text-sm text-gray-400">
+                  {pub.bio}
+                </p>
+              ) : null}
             </div>
 
-            <div className="text-right shrink-0">
-              <p className="text-white text-sm font-semibold">{pub.followerCount ?? 0}</p>
-              <p className="text-gray-500 text-xs">followers</p>
+            <div className="shrink-0 text-left sm:text-right">
+              <p className="text-sm font-semibold text-white">{pub.followerCount ?? 0}</p>
+              <p className="text-xs text-gray-500">followers</p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <PrimaryButton type="button" onClick={() => setEditOpen(true)}>
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+            <PrimaryButton type="button" onClick={() => setEditOpen(true)} className="w-full sm:w-auto">
               <span className="inline-flex items-center gap-2">
                 <Pencil size={16} /> Edit Publication
               </span>
             </PrimaryButton>
-            <DangerButton type="button" onClick={deletePub}>
+            <DangerButton type="button" onClick={deletePub} className="w-full sm:w-auto">
               Delete
             </DangerButton>
           </div>
         </div>
       ) : null}
 
-      {/* Form (Create or Edit) */}
       {!pub || editOpen ? (
         <div className="mt-1">
-          {/* sticky-ish header row inside form */}
-          <div className="flex items-center justify-between gap-3 mb-4">
-            <div>
-              <p className="text-white font-semibold">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0">
+              <p className="font-semibold text-white">
                 {pub ? "Edit Publication" : "Create Publication"}
               </p>
-              <p className="text-gray-500 text-sm">
+              <p className="text-sm text-gray-500">
                 Pick a clean name and a unique slug for your page.
               </p>
             </div>
 
             {pub ? (
-              <SoftButton type="button" onClick={closeForm}>
+              <SoftButton type="button" onClick={closeForm} className="w-full sm:w-auto">
                 Cancel
               </SoftButton>
             ) : null}
@@ -660,12 +709,14 @@ function PublicationTab() {
               hint="Only lowercase letters, numbers and hyphens."
               right={
                 pub ? (
-                  <span className="text-xs text-gray-500">Changing slug changes your URL</span>
+                  <span className="text-xs text-gray-500">
+                    Changing slug changes your URL
+                  </span>
                 ) : null
               }
             >
               <div className="flex items-center gap-2">
-                <span className="text-gray-500 text-sm shrink-0">/p/</span>
+                <span className="shrink-0 text-sm text-gray-500">/p/</span>
                 <Input
                   type="text"
                   value={slug}
@@ -685,23 +736,27 @@ function PublicationTab() {
               />
             </Field>
 
-            <div className="bg-gray-800/40 border border-gray-700 rounded-2xl p-4">
+            <div className="rounded-2xl border border-gray-700 bg-gray-800/40 p-4">
               <ImageUpload value={logoUrl} onChange={setLogoUrl} label="Logo / Avatar" />
             </div>
 
-            <div className="flex flex-wrap items-center gap-3 pt-1">
-              <PrimaryButton type="submit" loading={saving}>
+            <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:flex-wrap sm:items-center">
+              <PrimaryButton type="submit" loading={saving} className="w-full sm:w-auto">
                 {pub ? "Save Changes" : "Create Publication"}
               </PrimaryButton>
 
               {pub ? (
-                <SoftButton type="button" onClick={() => setEditOpen(false)}>
+                <SoftButton type="button" onClick={() => setEditOpen(false)} className="w-full sm:w-auto">
                   Done
                 </SoftButton>
               ) : null}
 
               {pub ? (
-                <DangerButton type="button" onClick={deletePub} className="ml-auto">
+                <DangerButton
+                  type="button"
+                  onClick={deletePub}
+                  className="w-full sm:ml-auto sm:w-auto"
+                >
                   Delete Publication
                 </DangerButton>
               ) : null}
@@ -731,22 +786,22 @@ function DangerTab({ logoutUser, navigate }) {
   };
 
   return (
-    <div className="bg-gray-900 border border-red-500/20 rounded-2xl overflow-hidden">
-      <div className="px-6 py-5 border-b border-red-500/20 flex items-center justify-between">
-        <h2 className="text-red-300 font-semibold flex items-center gap-2">
+    <div className="overflow-hidden rounded-2xl border border-red-500/20 bg-gray-900">
+      <div className="flex flex-col gap-3 border-b border-red-500/20 px-4 py-4 sm:px-5 sm:py-5 md:flex-row md:items-center md:justify-between lg:px-6">
+        <h2 className="flex items-center gap-2 font-semibold text-red-300">
           <Trash2 size={16} /> Danger Zone
         </h2>
-        <span className="text-xs text-red-200/70 bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-1.5">
+        <span className="inline-flex w-fit items-center rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-xs text-red-200/70">
           Irreversible
         </span>
       </div>
 
-      <div className="p-6">
-        <div className="flex items-start gap-3 p-4 rounded-2xl bg-red-500/10 border border-red-500/20 mb-5">
-          <ShieldAlert size={18} className="text-red-300 mt-0.5" />
-          <div>
-            <p className="text-white/90 text-sm font-semibold">Delete your account</p>
-            <p className="text-red-100/70 text-sm mt-1">
+      <div className="p-4 sm:p-5 lg:p-6">
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-red-500/20 bg-red-500/10 p-4">
+          <ShieldAlert size={18} className="mt-0.5 text-red-300" />
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-white/90">Delete your account</p>
+            <p className="mt-1 break-words text-sm text-red-100/70">
               This permanently deletes your profile, publications, resources, and all related data.
             </p>
           </div>
@@ -755,7 +810,7 @@ function DangerTab({ logoutUser, navigate }) {
         <button
           onClick={deleteAccount}
           disabled={busy}
-          className="px-5 py-2.5 bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm rounded-xl transition"
+          className="w-full rounded-xl bg-red-600 px-5 py-2.5 text-sm text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {busy ? "Deleting..." : "Delete Account"}
         </button>
